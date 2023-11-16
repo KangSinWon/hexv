@@ -1,4 +1,5 @@
 use clap::Parser;
+use colored::*;
 use std::fs;
 
 /// Simple hex viewer
@@ -34,12 +35,26 @@ fn run(f: &str) {
             hex_str += &format!("{:02x} ", t as i32);
         }
 
-        if hex_str.len() < interval * 3 {
-
-        }
+        if hex_str.len() < interval * 3 {}
         hex_str += &format!(" ").repeat((interval * 3) - hex_str.len());
-        
-        println!("0x{:08} {hex_str}| {}", line, s.replace("\r", "\\").replace("\n", "\\"));
+
+        let dec: String = s
+            .chars()
+            .map(|c| {
+                if c == '\r' || c == '\n' {
+                    "\\".red().to_string()
+                } else {
+                    c.to_string().blue().to_string()
+                }
+            }).collect();
+
+        println!(
+            "0x{:08} {}| {}",
+            line,
+            hex_str.green(),
+            dec
+            // s.replace("\r", "\\").replace("\n", "\\").blue()
+        );
 
         index += interval;
         line += 10;
@@ -52,6 +67,7 @@ fn main() {
     if let Some(file_name) = cli.file.as_deref() {
         let f = fs::read_to_string(file_name).expect("Should have been able to read the file");
 
+        println!("hexv: {}", file_name);
         run(f.as_str());
     } else {
         println!("Please enter the file");
