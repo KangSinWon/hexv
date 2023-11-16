@@ -33,8 +33,13 @@ fn run(f: &str) {
         for t in chars {
             hex_str += &format!("{:02x} ", t as i32);
         }
+
+        if hex_str.len() < interval * 3 {
+
+        }
+        hex_str += &format!(" ").repeat((interval * 3) - hex_str.len());
         
-        println!("0x{:08} {hex_str}| {}", line, s.replace("\r", "").replace("\n", ""));
+        println!("0x{:08} {hex_str}| {}", line, s.replace("\r", "\\").replace("\n", "\\"));
 
         index += interval;
         line += 10;
